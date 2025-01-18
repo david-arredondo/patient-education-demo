@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doctor Dashboard</title>
+</head>
+<body>
+<h1>Doctor Dashboard</h1>
+<div id="patientList"></div>
+<div id="qrCodeContainer"></div>
+
+<script>
+(async function loadPatients() {
+  const res = await fetch('/api/doctor/patients');
+  if (!res.ok) {
+    alert('Not authorized. Please login.');
+    window.location.href = '/doctor-login.html';
+    return;
+  }
+  const data = await res.json();
+  
+  const container = document.getElementById('patientList');
+  container.innerHTML = '';
+  data.patients.forEach(patient => {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <p>Patient: ${patient.name} (ID: ${patient.id})</p>
+      <p>Slides Viewed: ${patient.slidesViewed.length}</p>
+      <p>Flags: ${patient.flags.length}</p>
+      <button onclick="generateQR(${patient.id})">Generate QR</button>
+    `;
+    container.appendChild(div);
+  });
+})();
+
+async function generateQR(patientId) {
+  const res = await fetch(`/api/doctor/generate-qr?patientId=${patientId}`);
+  const data = await res.json();
+  document.getElementById('qrCodeContainer').innerHTML = `<img src="${data.qrCode}" />`;
+}
+</script>
+</body>
+</html>

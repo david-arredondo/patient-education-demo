@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Patient Slideshow</title>
+</head>
+<body>
+<h1>Patient Education Slides</h1>
+<div id="slideContent">Loading...</div>
+<button id="prevBtn" disabled>Previous</button>
+<button id="flagBtn">Flag This Slide</button>
+<button id="nextBtn">Next</button>
+
+<script>
+  const slides = [
+    "Slide 1: Introduction to Condition",
+    "Slide 2: Symptoms and Diagnosis",
+    "Slide 3: Treatment Options",
+    "Slide 4: Lifestyle Adjustments",
+    "Slide 5: Summary and Next Steps"
+  ];
+
+  // Extract patient ID from URL (e.g., /patient/123)
+  const patientId = window.location.pathname.split('/').pop();
+  let currentSlideIndex = 0;
+
+  function renderSlide() {
+    document.getElementById('slideContent').innerText = slides[currentSlideIndex];
+    document.getElementById('prevBtn').disabled = (currentSlideIndex === 0);
+    document.getElementById('nextBtn').disabled = (currentSlideIndex === slides.length - 1);
+    recordProgress();
+  }
+
+  async function recordProgress(flagged = false) {
+    await fetch(`/api/patient/${patientId}/progress`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slideIndex: currentSlideIndex, flagged })
+    });
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    if (currentSlideIndex > 0) {
+      currentSlideIndex--;
+      renderSlide();
+    }
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    if (currentSlideIndex < slides.length - 1) {
+      currentSlideIndex++;
+      renderSlide();
+    }
+  });
+
+  document.getElementById('flagBtn').addEventListener('click', () => {
+    recordProgress(true);
+    alert('Slide flagged for follow-up!');
+  });
+
+  renderSlide();
+</script>
+</body>
+</html>

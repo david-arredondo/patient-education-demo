@@ -1,0 +1,16 @@
+{
+  "patients": [
+    {
+      "id": 123,
+      "name": "John Doe",
+      "slidesViewed": [],
+      "flags": []
+    },
+    {
+      "id": 456,
+      "name": "Jane Smith",
+      "slidesViewed": [],
+      "flags": []
+    }
+  ]
+}
