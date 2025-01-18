@@ -48,7 +48,7 @@ app.get('/api/doctor/generate-qr', async (req, res) => {
   if (!req.session.doctor) return res.status(403).json({ message: 'Unauthorized' });
   
   const patientId = req.query.patientId;
-  const url = `https://yourapp.com/patient/${patientId}`;
+  const url = `https://patient-education-demo-km7v829ys-daves-projects-867ed45f.vercel.app/patient.html`;
   
   try {
     const qrDataURL = await QRCode.toDataURL(url);
